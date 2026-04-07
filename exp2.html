@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #d1d1d1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 380px;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 22px;
+            color: #333;
+            text-align: left;
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: #fcfcfc;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #e34c4c; /* Red color matching the image */
+            color: white;
+            border: none;
+            padding: 10px 5px;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 2px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #c93a3a;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            font-size: 13px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Employee Management System</h2>
+    
+    <div class="form-section">
+        <input type="text" id="name" placeholder="Employee Name">
+        <input type="text" id="empId" placeholder="Employee ID">
+        <input type="number" id="salary" placeholder="Salary">
+        <input type="text" id="dept" placeholder="Department">
+
+        <div class="button-grid">
+            <button onclick="addEmployee()">Add Employee</button>
+            <button onclick="displayEmployees()">Display All</button>
+            <button onclick="filterSalary()">Salary > 50000</button>
+            <button onclick="totalSalary()">Total Salary</button>
+            <button onclick="averageSalary()">Average Salary</button>
+            <button onclick="countDepartment()">Count Department</button>
+        </div>
+        
+        <div id="output"></div>
+    </div>
+</div>
+
+<script>
+    let employees = [];
+
+    function addEmployee() {
+        const name = document.getElementById('name').value;
+        const id = document.getElementById('empId').value;
+        const salary = parseFloat(document.getElementById('salary').value);
+        const dept = document.getElementById('dept').value;
+
+        if(name && id && !isNaN(salary) && dept) {
+            employees.push({ name, id, salary, dept });
+            document.getElementById('output').innerHTML = "Status: Employee added successfully.";
+            clearInputs();
+        } else {
+            alert("Please fill all fields correctly.");
+        }
+    }
+
+    function clearInputs() {
+        document.getElementById('name').value = '';
+        document.getElementById('empId').value = '';
+        document.getElementById('salary').value = '';
+        document.getElementById('dept').value = '';
+    }
+
+    function displayEmployees() {
+        if(employees.length === 0) {
+            document.getElementById('output').innerHTML = "No data found.";
+            return;
+        }
+        let out = "<strong>All Records:</strong><br>";
+        employees.forEach(e => out += `${e.id}: ${e.name} - ${e.dept} ($${e.salary})<br>`);
+        document.getElementById('output').innerHTML = out;
+    }
+
+    function filterSalary() {
+        let filtered = employees.filter(e => e.salary > 50000);
+        let out = "<strong>Salary > 50000:</strong><br>";
+        if(filtered.length === 0) out += "None";
+        filtered.forEach(e => out += `${e.name}: $${e.salary}<br>`);
+        document.getElementById('output').innerHTML = out;
+    }
+
+    function totalSalary() {
+        let total = employees.reduce((sum, e) => sum + e.salary, 0);
+        document.getElementById('output').innerHTML = `<strong>Total Expenditure:</strong> $${total}`;
+    }
+
+    function averageSalary() {
+        if(employees.length === 0) {
+            document.getElementById('output').innerHTML = "No data to calculate.";
+            return;
+        }
+        let total = employees.reduce((sum, e) => sum + e.salary, 0);
+        document.getElementById('output').innerHTML = `<strong>Average Salary:</strong> $${(total/employees.length).toFixed(2)}`;
+    }
+
+    function countDepartment() {
+        let counts = {};
+        employees.forEach(e => counts[e.dept] = (counts[e.dept] || 0) + 1);
+        let out = "<strong>Dept Counts:</strong><br>";
+        for(let d in counts) out += `${d}: ${counts[d]} employees<br>`;
+        document.getElementById('output').innerHTML = (out === "<strong>Dept Counts:</strong><br>") ? "No data" : out;
+    }
+</script>
+
+</body>
+</html>
